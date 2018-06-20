@@ -394,11 +394,16 @@ static NSString * const FileUploadURL = @"https://uploads.stripe.com/v1/files";
 }
 
 + (NSArray<NSString *> *)supportedPKPaymentNetworks {
-    NSArray *supportedNetworks = @[PKPaymentNetworkAmex, PKPaymentNetworkMasterCard, PKPaymentNetworkVisa];
-    if ((&PKPaymentNetworkDiscover) != NULL) {
-        supportedNetworks = [supportedNetworks arrayByAddingObject:PKPaymentNetworkDiscover];
+    
+    if (@available(iOS 10, watchOS 3, *)) {
+        return [PKPaymentRequest availableNetworks];
+    } else {
+        NSArray *supportedNetworks = @[PKPaymentNetworkAmex, PKPaymentNetworkMasterCard, PKPaymentNetworkVisa];
+        if ((&PKPaymentNetworkDiscover) != NULL) {
+            supportedNetworks = [supportedNetworks arrayByAddingObject:PKPaymentNetworkDiscover];
+        }
+        return supportedNetworks;
     }
-    return supportedNetworks;
 }
 
 + (BOOL)deviceSupportsApplePay {
